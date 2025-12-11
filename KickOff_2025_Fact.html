@@ -1,0 +1,921 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SINAY-Facturación</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <style>
+        /* ==================================== */
+        /* 1. CSS (Estilo de la Presentación)   */
+        /* ==================================== */
+
+        /* Variables de Color */
+        :root {
+            --color-riesgo: #E74C3C; /* Rojo Fuerte */
+            --color-valor: #27AE60; /* Verde Optimista */
+            --color-fondo: #F4F6F8; /* Gris Claro Limpio */
+            --color-texto-dark: #2C3E50;
+            --color-texto-light: #ECF0F1;
+            --color-accent: #3498DB; /* Azul */
+        }
+
+        /* Estilos Generales */
+        body {
+            font-family: 'Montserrat', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: var(--color-fondo);
+            color: var(--color-texto-dark);
+            line-height: 1.6;
+            overflow: hidden; /* Oculta el scroll */
+        }
+
+        /* SLIDE CONTAINER & TRANSITION */
+        .slide {
+            height: 100vh;
+            width: 100vw;
+            padding: 50px;
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            border-bottom: 5px solid rgba(0, 0, 0, 0.1);
+            position: absolute;
+            top: 0;
+            left: 0;
+            opacity: 0; /* Oculta por defecto */
+            visibility: hidden;
+            transition: opacity 0.8s ease-in-out, visibility 0s linear 0.8s;
+            
+            /* Patrón Geométrico de Fondo (Lego/Bloques) */
+            background-color: var(--color-fondo);
+            background-image: repeating-linear-gradient(45deg, rgba(200, 200, 200, 0.1) 0, rgba(200, 200, 200, 0.1) 2px, transparent 2px, transparent 10px),
+                              repeating-linear-gradient(-45deg, rgba(200, 200, 200, 0.1) 0, rgba(200, 200, 200, 0.1) 2px, transparent 2px, transparent 10px);
+            background-size: 10px 10px;
+        }
+
+        .slide.active {
+            opacity: 1; /* Muestra la diapositiva activa */
+            visibility: visible;
+            transition-delay: 0s;
+        }
+
+        /* Contenedor principal de contenido para centrar y aplicar sombra */
+        .slide-content {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 30px 50px;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            width: 90%;
+            max-width: 1200px;
+            position: relative;
+        }
+
+        h1 {
+            font-size: 3.5em;
+            margin-bottom: 0.2em;
+            font-weight: 900;
+            color: var(--color-texto-dark);
+        }
+
+        h2 {
+            font-size: 2.5em;
+            color: var(--color-accent);
+            margin-top: 0;
+            margin-bottom: 30px;
+        }
+
+        /* Diapositiva 1: Portada */
+        #slide-portada {
+            background-color: var(--color-texto-dark);
+            color: var(--color-texto-light);
+            background-image: none; 
+        }
+        #slide-portada .slide-content {
+            background: none;
+            box-shadow: none;
+            text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5);
+        }
+        #slide-portada h1 {
+            color: white;
+            font-size: 4.5em;
+        }
+        .eslogan {
+            font-size: 1.8em;
+            color: var(--color-valor);
+            font-weight: 700;
+        }
+        .icon-combo {
+            font-size: 10em;
+            color: var(--color-valor);
+        }
+        
+        /* Diapositiva 2: Índice */
+        #slide-indice .slide-content {
+            align-items: flex-start;
+            text-align: left;
+            display: flex; /* Añadido para controlar el contenido interno */
+            flex-direction: column;
+        }
+        #slide-indice h2 {
+            align-self: center;
+            text-align: center;
+            width: 100%;
+        }
+        #slide-indice ol {
+            list-style: none;
+            counter-reset: item;
+            padding: 0;
+            width: 80%;
+            margin: 20px auto;
+        }
+        #slide-indice li {
+            counter-increment: item;
+            font-size: 1.8em;
+            padding: 15px 0;
+            border-bottom: 1px solid #ccc;
+            transition: color 0.3s;
+        }
+        #slide-indice li::before {
+            content: counter(item) ". ";
+            color: var(--color-accent);
+            font-weight: 700;
+            margin-right: 15px;
+        }
+
+        /* Diapositiva 3: Objetivo Estratégico */
+        .meta-box {
+            background-color: var(--color-valor);
+            color: var(--color-texto-light);
+            padding: 30px;
+            border-radius: 10px;
+            font-size: 1.5em;
+            margin-bottom: 30px;
+            font-weight: 700;
+            width: 90%;
+            margin: 0 auto 30px;
+        }
+        .impacto-list {
+            display: flex;
+            gap: 40px;
+            margin-top: 30px;
+            justify-content: center;
+        }
+        .impacto-list div {
+            flex: 1;
+            padding: 20px;
+            border: 2px solid var(--color-accent);
+            border-radius: 8px;
+            font-weight: 700;
+            max-width: 300px;
+        }
+        .plazo {
+            font-size: 2em;
+            color: var(--color-accent);
+            font-weight: 900;
+            margin-top: 10px;
+        }
+        #slide-objetivo .slide-content p {
+            font-size: 1.2em;
+            margin-top: 30px;
+            font-weight: 500;
+        }
+
+
+        /* Diapositiva 4: Antes y Ahora */
+        .contraste-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+            width: 90%;
+            text-align: left;
+            margin: 0 auto 20px;
+        }
+        .riesgo-col {
+            background-color: var(--color-riesgo);
+            color: var(--color-texto-light);
+            padding: 30px;
+            border-radius: 10px;
+        }
+        .valor-col {
+            background-color: var(--color-valor);
+            color: var(--color-texto-light);
+            padding: 30px;
+            border-radius: 10px;
+        }
+        .contraste-grid h3 {
+            font-size: 1.8em;
+            margin-top: 0;
+        }
+        .contraste-grid ul {
+            list-style: none;
+            padding: 0;
+        }
+        .contraste-grid li {
+            margin-bottom: 15px;
+            font-size: 1.1em;
+        }
+        .speed-highlight {
+            font-size: 4em;
+            font-weight: 900;
+            color: var(--color-accent);
+            margin-top: 20px;
+            border: 5px solid var(--color-accent);
+            padding: 10px 20px;
+            border-radius: 10px;
+            background-color: white;
+            display: inline-block;
+        }
+
+        /* Diapositiva 5: Costos Operativos (ROI) */
+        .roi-table {
+            width: 90%;
+            border-collapse: collapse;
+            margin: 0 auto 30px;
+        }
+        .roi-table th, .roi-table td {
+            padding: 15px;
+            border-bottom: 1px solid #eee;
+            text-align: center;
+        }
+        .roi-table th {
+            background-color: var(--color-accent);
+            color: white;
+            font-size: 1.2em;
+        }
+        .roi-table td {
+            font-size: 1.1em;
+            font-weight: 700;
+        }
+        .roi-table .costo-actual { color: var(--color-riesgo); }
+        .roi-table .nuevo-costo { color: var(--color-valor); }
+        .roi-table .ahorro { background-color: #D4EFDF; color: var(--color-valor); }
+
+        .ahorro-box {
+            font-size: 2.5em;
+            font-weight: 900;
+            color: var(--color-valor);
+            padding: 15px 30px;
+            border: 3px solid var(--color-valor);
+            border-radius: 10px;
+            background-color: white;
+        }
+
+        /* Gráfico de Barras ROI (Simulado) */
+        .bar-chart-container {
+            width: 60%;
+            height: 150px;
+            display: flex;
+            align-items: flex-end;
+            gap: 20px;
+            margin: 30px auto 0;
+        }
+        .bar {
+            flex: 1;
+            height: 100%;
+            position: relative;
+            background-color: var(--color-fondo);
+            border-radius: 5px 5px 0 0;
+            overflow: hidden;
+            border: 1px solid #ccc;
+        }
+        .bar-actual {
+            height: 100%;
+            background-color: var(--color-riesgo);
+        }
+        .bar-nuevo {
+            height: 26.5%; /* 3367/12700 * 100% ~ 26.5% */
+            background-color: var(--color-valor);
+        }
+        .bar-label {
+            position: absolute;
+            top: -30px;
+            left: 0;
+            right: 0;
+            font-weight: 700;
+            font-size: 1em;
+            text-align: center;
+        }
+        /* --- ESTILOS DE LA DIAPOSITIVA 6 (KPIs V2) --- */
+
+        .kpi-dashboard-v2 {
+            display: flex;
+            gap: 25px;
+            width: 95%;
+            justify-content: center;
+            margin-top: 20px;
+        }
+
+        .kpi-card {
+            flex: 1;
+            padding: 25px 15px;
+            border-radius: 10px;
+            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s, box-shadow 0.3s;
+            background: white;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .kpi-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 25px rgba(0, 0, 0, 0.2);
+        }
+
+        .kpi-icon-v2 {
+            font-size: 3em;
+            margin-bottom: 10px;
+        }
+
+        .kpi-value-v2 {
+            font-size: 4.5em;
+            font-weight: 900;
+            line-height: 1;
+            margin-bottom: 5px;
+        }
+
+        .kpi-value-v2 small {
+            font-size: 0.5em;
+            font-weight: 700;
+        }
+
+        .kpi-label-v2 {
+            font-size: 1.1em;
+            font-weight: 700;
+            margin-top: 0;
+            padding: 0 5px;
+            min-height: 45px; /* Asegura uniformidad */
+        }
+
+        .kpi-footer {
+            display: block;
+            font-size: 0.8em;
+            color: rgba(0, 0, 0, 0.6);
+            margin-top: 10px;
+            font-style: italic;
+        }
+
+        /* Colores Temáticos para Contraste */
+        .kpi-blue { 
+            border-top: 5px solid var(--color-accent); 
+        }
+        .kpi-blue .kpi-icon-v2, .kpi-blue .kpi-value-v2 { 
+            color: var(--color-accent); 
+        }
+
+        .kpi-green { 
+            border-top: 5px solid var(--color-valor); 
+        }
+        .kpi-green .kpi-icon-v2, .kpi-green .kpi-value-v2 { 
+            color: var(--color-valor); 
+        }
+
+        .kpi-orange { 
+            border-top: 5px solid #FF8C00; /* Naranja/Ámbar */
+        }
+        .kpi-orange .kpi-icon-v2, .kpi-orange .kpi-value-v2 { 
+            color: #FF8C00; 
+        }
+
+        .kpi-red { 
+            border-top: 5px solid var(--color-riesgo); 
+        }
+        .kpi-red .kpi-icon-v2, .kpi-red .kpi-value-v2 { 
+            color: var(--color-riesgo); 
+        }
+
+        
+        
+        /* Diapositiva 6: KPIs */
+        .kpi-dashboard {
+            display: flex;
+            gap: 40px;
+            width: 90%;
+            justify-content: space-around;
+            margin-top: 30px;
+        }
+        .kpi-indicator {
+            flex: 1;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            background-color: white;
+        }
+        .kpi-value {
+            font-size: 3em;
+            font-weight: 900;
+            color: var(--color-valor);
+            margin-bottom: 5px;
+        }
+        .kpi-label {
+            font-size: 1.1em;
+            color: var(--color-texto-dark);
+        }
+
+        /* Indicador de Progreso Circular (Simulado) */
+        .progress-circle {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            margin: 0 auto 10px;
+            /* Usando Conic-Gradient para simular el progreso */
+            background: radial-gradient(closest-side, white 79%, transparent 80% 100%),
+                        conic-gradient(var(--color-valor) 98%, #ccc 0);
+        }
+        .progress-circle-400 {
+            background: radial-gradient(closest-side, white 79%, transparent 80% 100%),
+                        conic-gradient(var(--color-valor) 100%, #ccc 0);
+        }
+        .progress-circle-99 {
+            background: radial-gradient(closest-side, white 79%, transparent 80% 100%),
+                        conic-gradient(var(--color-valor) 99%, #ccc 0);
+        }
+        .progress-circle-zero {
+            background: radial-gradient(closest-side, white 79%, transparent 80% 100%),
+                        conic-gradient(var(--color-valor) 100%, #ccc 0);
+            border: 2px solid var(--color-valor);
+        }
+        .progress-circle span {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100%;
+            font-weight: 700;
+            color: var(--color-valor);
+            font-size: 1.2em;
+        }
+
+        /* Diapositiva 7: Plan de Despliegue */
+        .timeline-container {
+            width: 90%;
+            margin: 50px auto;
+        }
+        .timeline {
+            display: flex;
+            justify-content: space-between;
+            position: relative;
+        }
+        .timeline::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background-color: var(--color-accent);
+            transform: translateY(-50%);
+            z-index: 1;
+        }
+        .phase {
+            width: 20%;
+            position: relative;
+            padding: 20px;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            z-index: 2;
+        }
+        .phase-dot {
+            width: 20px;
+            height: 20px;
+            background-color: var(--color-valor);
+            border-radius: 50%;
+            position: absolute;
+            top: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            border: 4px solid var(--color-fondo);
+            z-index: 3;
+        }
+        .phase h4 {
+            color: var(--color-accent);
+            font-size: 1.4em;
+            margin-top: 0;
+        }
+        .timeline-note {
+            margin-top: 40px;
+            padding: 10px;
+            background-color: #E6F0F8;
+            border-left: 5px solid var(--color-accent);
+            font-weight: 700;
+            width: 90%;
+            margin: 40px auto 0;
+        }
+
+        /* Diapositiva 8: Módulos */
+        .impacto-list-modulos {
+            display: flex;
+            gap: 40px;
+            margin-top: 30px;
+            justify-content: center;
+            width: 90%;
+            margin: 30px auto;
+        }
+        .impacto-list-modulos div {
+            flex: 1;
+            padding: 20px;
+            border: 2px solid var(--color-valor);
+            border-radius: 8px;
+            font-weight: 700;
+            max-width: 300px;
+        }
+        .impacto-list-modulos h4 {
+            color: var(--color-accent);
+            font-size: 1.5em;
+            margin-top: 10px;
+        }
+        
+        /* Cierre Slide */
+        #slide-cierre h1 {
+            color: var(--color-texto-light);
+        }
+        #slide-cierre .slogan {
+            color: var(--color-fondo);
+        }
+    </style>
+</head>
+<body>
+
+<div class="slide" id="slide-portada" data-slide-index="0">
+    <div class="slide-content">
+        <div class="icon-combo">
+            <i class="fas fa-shield-alt"></i> <i class="fas fa-arrow-up"></i>
+        </div>
+        <h2>KickOff</h2>
+        <h1>Sistema de Facturación</h1>
+        <p class="eslogan">SINAY-Facturación: Seguridad Blindada, Crecimiento Sin Límites.</p>
+    </div>
+</div>
+
+    <div class="slide" id="slide-indice" data-slide-index="1">
+        <div class="slide-content">
+            <h2><i class="fas fa-list-ol" style="color:var(--color-accent);"></i> Agenda Ejecutiva</h2>
+            <ol>
+                <li>Objetivo (La Meta)</li>
+                <li>Antes y Ahora (Riesgo vs. Valor)</li>
+                <li>Costos Operativos (ROI Financiero)</li>
+                <li>KPIs (Métricas Clave de Éxito)</li>
+                <li>Plan de Despliegue (Hoja de Ruta)</li>
+                <li>Módulos y Manuales (Habilitadores)</li>
+                <li>Procesos levantados (Seguimiento)</li>
+                <li>Proximos modulos (Siguiente Fase)</li>
+            </ol>
+        </div>
+    </div>
+
+    <div class="slide" id="slide-objetivo" data-slide-index="2">
+        <div class="slide-content">
+            <h2><i class="fas fa-bullseye" style="color:var(--color-accent);"></i> Objetivo</h2>
+            
+            <div class="meta-box">
+                Migración completa a SINAY-Facturación en 8 semanas.
+            </div>
+            
+            <div class="impacto-list">
+                <div><i class="fas fa-lock fa-2x"></i><br>Eliminar el 100% de vulnerabilidades de seguridad</div>
+                <div><i class="fas fa-chart-line fa-2x"></i><br>Aumentar la productividad por facturación simultánea</div>
+                <div><i class="fas fa-search-dollar fa-2x"></i><br>Garantizar la trazabilidad completa</div>
+            </div>
+            
+            <div style="margin-top: 40px; display: flex; justify-content: center; gap: 50px; align-items: center;">
+                <i class="fas fa-clock fa-2x" style="color:var(--color-riesgo);"></i> Desarrollo: <span class="plazo">10 Semanas</span> |
+                <i class="fas fa-rocket fa-2x" style="color:var(--color-valor);"></i> Migración: <span class="plazo">8 Semanas</span>
+            </div>
+            <p>Es una Ventaja Competitiva que asegura las operaciones y sienta bases para el crecimiento escalable.</p>
+        </div>
+    </div>
+
+    <div class="slide" id="slide-contraste" data-slide-index="3">
+        <div class="slide-content">
+            <h2>Antes VS Ahora</h2>
+            
+            <div class="contraste-grid">
+                <div class="riesgo-col">
+                    <h3>🔴 ANTES: METABIT</h3>
+                    <ul>
+                        <li><i class="fas fa-exclamation-triangle"></i> Sin seguridad (100% de Vulnerabilidades)</li>
+                        <li><i class="fas fa-user"></i> Un solo usuario (Cuellos de botella)</li>
+                        <li><i class="fas fa-times-circle"></i> Sin trazabilidad</li>
+                        <li><i class="fas fa-hourglass-half"></i> Tiempos de espera largos</li>
+                    </ul>
+                </div>
+                
+                <div class="valor-col">
+                    <h3>🟢 AHORA: SINAY-Facturación</h3>
+                    <ul>
+                        <li><i class="fas fa-shield-alt"></i> Seguridad Extremo (Cero incidentes)</li>
+                        <li><i class="fas fa-users"></i> Multiusuario x20 (Capacidad ampliada)</li>
+                        <li><i class="fas fa-check-circle"></i> Trazabilidad Total</li>
+                        <li><i class="fas fa-tachometer-alt"></i> 7,000 pedidos en 28 minutos</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="speed-highlight">
+                ¡3 veces mas rapido en cargas masivas!
+            </div>
+        </div>
+    </div>
+
+    <div class="slide" id="slide-roi" data-slide-index="4">
+        <div class="slide-content">
+            <h2><i class="fas fa-chart-pie" style="color:var(--color-accent);"></i> Costos operativos</h2>
+            <h2><i style="color:var(--color-accent);"></i>Ahorro de $111,996 MXN Anuales</h2>
+            
+            <table class="roi-table">
+                <thead>
+                    <tr>
+                        <th>Concepto</th>
+                        <th>Costo Actual (MXN)</th>
+                        <th>Nuevo Costo (MXN)</th>
+                        <th>Ahorro Mensual (MXN)</th>
+                        <th>Ahorro %</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Servidor y Mantenimiento</td>
+                        <td class="costo-actual">$4,000</td>
+                        <td class="nuevo-costo">$450</td>
+                        <td class="ahorro">$3,550</td>
+                        <td class="ahorro">88.75%</td>
+                    </tr>
+                    <tr>
+                        <td>Timbres de Facturación</td>
+                        <td class="costo-actual">$8,700</td>
+                        <td class="nuevo-costo">$2,917</td>
+                        <td class="ahorro">$5,783</td>
+                        <td class="ahorro">66.5%</td>
+                    </tr>
+                    <tr>
+                        <td>COSTO TOTAL MENSUAL</td>
+                        <td class="costo-actual" style="font-size:1.2em;">$12,700</td>
+                        <td class="nuevo-costo" style="font-size:1.2em;">$3,367</td>
+                        <td class="ahorro" style="font-size:1.2em;">$9,333</td>
+                        <td class="ahorro" style="font-size:1.2em;">73.5%</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="ahorro-box">
+                Ahorro Mensual Recurrente: $9,333 MXN
+            </div>
+
+        </div>
+    </div>
+
+    <div class="slide" id="slide-kpis" data-slide-index="5">
+        <div class="slide-content">
+            <h2><i class="fas fa-rocket" style="color:var(--color-valor);"></i> KPIS</h2>
+            
+            <p style="font-size: 1.3em; margin-bottom: 40px; color: var(--color-texto-dark);">
+                El éxito del lanzamiento se mide en impacto directo sobre la Velocidad, la Eficiencia y la Reducción de Riesgos Operacionales.
+            </p>
+
+            <div class="kpi-dashboard-v2">
+                
+                <div class="kpi-card kpi-blue">
+                    <div class="kpi-icon-v2"><i class="fas fa-tachometer-alt"></i></div>
+                    <div class="kpi-value-v2">300<small>%</small></div>
+                    <p class="kpi-label-v2">Mejora de Tiempos en Carga Masiva</p>
+                    <span class="kpi-footer">Casi inmediata</span>
+                </div>
+
+                <div class="kpi-card kpi-green">
+                    <div class="kpi-icon-v2"><i class="fas fa-chart-line"></i></div>
+                    <div class="kpi-value-v2">150<small>%</small></div>
+                    <p class="kpi-label-v2">Incremento de Productividad por Hora</p>
+                    <span class="kpi-footer">Horas humano</span>
+                </div>
+
+                <div class="kpi-card kpi-orange">
+                    <div class="kpi-icon-v2"><i class="fas fa-eraser"></i></div>
+                    <div class="kpi-value-v2">99<small>%</small></div>
+                    <p class="kpi-label-v2">Reducción de Errores Operacionales</p>
+                    <span class="kpi-footer">Mínimo Re-trabajo</span>
+                </div>
+
+                <div class="kpi-card kpi-red">
+                    <div class="kpi-icon-v2"><i class="fas fa-lock"></i></div>
+                    <div class="kpi-value-v2">0</div>
+                    <p class="kpi-label-v2">Incidentes de Seguridad</p>
+                    <span class="kpi-footer">Riesgo Blindado</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="slide" id="slide-despliegue" data-slide-index="6">
+        <div class="slide-content">
+            <h2><i class="fas fa-project-diagram" style="color:var(--color-accent);"></i> Migración Progresiva y Controlada (8 Semanas)</h2>
+            
+            <div class="timeline-container">
+                <div class="timeline">
+                    <div class="phase">
+                        <div class="phase-dot"></div>
+                        <h4>Fase 1: Piloto</h4>
+                        <p>Semanas 1-2 | 0-5% Operación</p>
+                    </div>
+                    <div class="phase">
+                        <div class="phase-dot"></div>
+                        <h4>Fase 2: Expansión</h4>
+                        <p>Semanas 3-4 | 5-30% Operación</p>
+                    </div>
+                    <div class="phase">
+                        <div class="phase-dot"></div>
+                        <h4>Fase 3: Transición</h4>
+                        <p>Semanas 5-6 | 30-70% Operación</p>
+                    </div>
+                    <div class="phase">
+                        <div class="phase-dot"></div>
+                        <h4>Fase 4: Go-Live</h4>
+                        <p>Semanas 7-8 | 100% Operación</p>
+                    </div>
+                </div>
+                <div class="timeline-note">
+                    <i class="fas fa-cogs"></i> Nota: El equipo de Desarrollo continuará añadiendo mejoras y módulos (control, autorización) durante este período.
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="slide" id="slide-modulos" data-slide-index="7">
+        <div class="slide-content">
+            <h2><i class="fas fa-book-open" style="color:var(--color-accent);"></i> Habilitadores de Valor Futuro</h2>
+            
+            <div class="impacto-list-modulos">
+                <div style="border-color: var(--color-valor);">
+                    <i class="fas fa-file-alt fa-2x"></i>
+                    <h4>Documentación Final</h4>
+                    <p>Módulos operativos (control, flujos de autorización) completados.</p>
+                </div>
+                <div style="border-color: var(--color-valor);">
+                    <i class="fas fa-users-cog fa-2x"></i>
+                    <h4>Manuales de Usuario</h4>
+                    <p>Detallados y listos para garantizar la adopción total del sistema.</p>
+                </div>
+                <div style="border-color: var(--color-valor);">
+                    <i class="fas fa-expand-alt fa-2x"></i>
+                    <h4>Expansión Futura</h4>
+                    <p>Garantizar la base para escalar la funcionalidad del sistema.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+<div class="slide" id="slide-procesos">
+        <div class="slide-content" style="text-align: left;">
+            <h2><i class="fas fa-layer-group" style="color:var(--color-accent);"></i> Procesos: Antes, Durante y Pendientes</h2>
+            
+            <div style="display: flex; gap: 40px; width: 100%; justify-content: center;">
+                
+                <div style="flex: 1; max-width: 450px;">
+                    <h3 style="color: var(--color-valor); border-bottom: 2px solid var(--color-valor); padding-bottom: 5px;"><i class="fas fa-check-circle"></i> Procesos Entregados</h3>
+                    
+                    <h4 style="color: var(--color-accent); margin-top: 15px;">Previo al Desarrollo:</h4>
+                    <ul style="list-style-type: '— '; padding-left: 20px; font-size: 1em;">
+                        <li>Proceso de Creación de Factura</li>
+                        <li>Proceso de Llenado de Pedido</li>
+                        <li>Proceso de Timbrado de Factura</li>
+                        <li>Proceso de Cancelación (actual)</li>
+                        <li>Proceso de Alta de Clientes</li>
+                        <li>Proceso de Triadas o Bajadas</li>
+                        <li>Proceso Notas de Crédito (Solo área de facturación)</li>
+                        <li>Proceso Complementos de Pago</li>
+                    </ul>
+                    
+                    <h4 style="color: var(--color-accent); margin-top: 25px;">Incorporados Durante el Desarrollo:</h4>
+                    <ul style="list-style-type: '— '; padding-left: 20px; font-size: 1em;">
+                        <li>Proceso Cargas Masivas</li>
+                        <li>Proceso Alta, Baja y Modificaciones en nuestras empresas</li>
+                        <li>Proceso Alertas de Contabilidad (Grandes contribuidores)</li>
+                        <li>Proceso Claves SAT</li>
+                    </ul>
+                </div>
+
+                <div style="flex: 1; max-width: 450px; border-left: 3px solid var(--color-riesgo); padding-left: 30px;">
+                    <h3 style="color: var(--color-riesgo); border-bottom: 2px solid var(--color-riesgo); padding-bottom: 5px;"><i class="fas fa-exclamation-triangle"></i> Procesos Pendientes (Próxima Fase)</h3>
+                    
+                    <ul style="list-style-type: '• '; padding-left: 20px; font-size: 1.1em; font-weight: 700;">
+                        <li >Reglas de negocio para alertas de Cancelación (Sin liberar)</li>
+                        <li >Reporte MEGA y Auditoria (Sin liberar)</li>
+                        <li>Procesos de Bolsas (Pendiente)</li>
+                        <li>Proceso de Conciliación (Pendientes)</li>
+                        <li>Procesos de Tesorería (Pendientes)</li>
+                        <li>Facturas de Gobierno y Amazon (Pendiente validación de cálculos)</li>
+                        <li>Notas de crédito y sus Variaciones (Pendientes)</li>
+                        <li>Complementos de Pago Masivos (Pendiente)</li>
+                        <li>Retornos (Pendiente)</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="slide" id="slide-proximos-modulos">
+        <div class="slide-content" style="text-align: center;">
+            <h2><i class="fas fa-cubes" style="color:var(--color-accent);"></i> Próximos Módulos: Expansión de Valor (Fase II)</h2>
+            
+            <p style="font-size: 1.2em; color: var(--color-texto-dark); max-width: 800px; margin: 0 auto 30px;">
+                La siguiente fase de desarrollo se enfoca en la robustez operativa, control financiero y automatización de procesos clave para el negocio.
+            </p>
+
+            <div style="display: flex; gap: 30px; width: 90%; margin: auto; text-align: left;">
+                
+                <div style="flex: 1; padding: 20px; border: 3px solid var(--color-accent); border-radius: 10px; background-color: #E6F0F8;">
+                    <h3 style="color: var(--color-accent);"><i class="fas fa-cogs"></i> Control y Automatización</h3>
+                    <ul style="list-style: none; padding: 0;">
+                        <li style="margin-bottom: 10px; font-weight: 700;"><i class="fas fa-check-double" style="color: var(--color-valor);"></i> Reglas de negocio de **Cancelación**</li>
+                        <li style="margin-bottom: 10px; font-weight: 700;"><i class="fas fa-check-double" style="color: var(--color-valor);"></i> **Automatización MEGA**</li>
+                        <li style="margin-bottom: 10px; font-weight: 700;"><i class="fas fa-check-double" style="color: var(--color-valor);"></i> Modificaciones **CIF** y **BOOT**</li>
+                        <li style="margin-bottom: 10px; font-weight: 700;"><i class="fas fa-check-double" style="color: var(--color-valor);"></i> Complemento de **Pagos Masivos**</li>
+                        <li style="margin-bottom: 10px; font-weight: 700;"><i class="fas fa-check-double" style="color: var(--color-valor);"></i> **Retornos**</li>
+                    </ul>
+                </div>
+
+                <div style="flex: 1; padding: 20px; border: 3px solid var(--color-valor); border-radius: 10px; background-color: #D4EFDF;">
+                    <h3 style="color: var(--color-valor);"><i class="fas fa-calculator"></i> Finanzas y Procesos Especiales</h3>
+                    <ul style="list-style: none; padding: 0;">
+                        <li style="margin-bottom: 10px; font-weight: 700;"><i class="fas fa-chart-line" style="color: var(--color-accent);"></i> Paquete de **Reportes** (Incl. MEGA)</li>
+                        <li style="margin-bottom: 10px; font-weight: 700;"><i class="fas fa-chart-line" style="color: var(--color-accent);"></i> Pantalla de entrega a **Conciliación y Tesorería**</li>
+                        <li style="margin-bottom: 10px; font-weight: 700;"><i class="fas fa-chart-line" style="color: var(--color-accent);"></i> Pantalla de **Gestión de Pagos** (Mesa de control)</li>
+                        <li style="margin-bottom: 10px; font-weight: 700;"><i class="fas fa-chart-line" style="color: var(--color-accent);"></i> **Gestión de Bolsas**</li>
+                        <li style="margin-bottom: 10px; font-weight: 700;"><i class="fas fa-chart-line" style="color: var(--color-accent);"></i> Timbrado **Facturas Especiales** (Gobierno y Amazon)</li>
+                        <li style="margin-bottom: 10px; font-weight: 700;"><i class="fas fa-chart-line" style="color: var(--color-accent);"></i> Notas de crédito y sus **Variaciones**</li>
+                    </ul>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <div class="slide title-slide" id="slide-cierre" data-slide-index="8">
+        <div class="slide-content">
+            <h1>¡Gracias!</h1>
+            <p class="eslogan">SINAY-Facturación: La base de nuestro crecimiento escalable.</p>
+        </div>
+    </div>
+
+    <script>
+        const slides = document.querySelectorAll('.slide');
+        let currentSlide = 0;
+
+        function showSlide(index) {
+            // Asegura que el índice esté dentro del rango
+            if (index >= slides.length) {
+                index = slides.length - 1;
+            } else if (index < 0) {
+                index = 0;
+            }
+
+            // Oculta todas las diapositivas
+            slides.forEach((slide) => {
+                slide.classList.remove('active');
+            });
+
+            // Muestra la diapositiva actual
+            slides[index].classList.add('active');
+            currentSlide = index;
+        }
+
+        function nextSlide() {
+            showSlide(currentSlide + 1);
+        }
+
+        function prevSlide() {
+            showSlide(currentSlide - 1);
+        }
+
+        // Manejo de eventos del teclado para avanzar (Derecha o Abajo) y retroceder (Izquierda o Arriba)
+        document.addEventListener('keydown', function(event) {
+            switch (event.key) {
+                case 'ArrowRight':
+                case 'ArrowDown':
+                case ' ': // Espacio también para avanzar
+                    nextSlide();
+                    break;
+                case 'ArrowLeft':
+                case 'ArrowUp':
+                    prevSlide();
+                    break;
+                case 'Home':
+                    showSlide(0);
+                    break;
+                case 'End':
+                    showSlide(slides.length - 1);
+                    break;
+            }
+        });
+        
+        // Inicializa mostrando la primera diapositiva
+        showSlide(currentSlide);
+    </script>
+
+</body>
+</html>
